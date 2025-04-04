@@ -95,16 +95,13 @@ function computeFrequencySpectrum(samples, timestep) {
   const freqData = []
   
   for (let k = 0; k < N / 2; k++) {
-    let real = 0
-    let imag = 0
+    let sum = new Complex128(0,0);
     for (let n = 0; n < N; n++) {
-      const angle = (2 * PI * k * n) / N
-      real += samples[n] * cos(angle)
-      imag -= samples[n] * sin(angle)
+      const theta = -2 * PI * k * n / N;
+      const w = new Complex128( cos(theta)*samples[n], sin(theta)*samples[n] );
+      sum = add( sum, w );
     }
-    real /= N
-    imag /= N
-    const magnitude = sqrt(real * real + imag * imag)
+    const magnitude = cabs(sum);
     const frequency = k / (N * timestep)
     freqData.push({ frequency, magnitude })
   }
